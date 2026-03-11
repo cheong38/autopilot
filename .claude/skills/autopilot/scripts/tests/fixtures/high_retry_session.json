@@ -1,0 +1,116 @@
+{
+  "session_id": "retry-001",
+  "meta_issue": {"number": 20, "url": "https://github.com/test/repo/issues/20"},
+  "created_at_ms": 1709400000000,
+  "spans": [
+    {
+      "id": "root-002",
+      "parent_id": null,
+      "name": "retry-001",
+      "kind": "session",
+      "status": "ok",
+      "start_time_ms": 1709400000000,
+      "end_time_ms": 1709400900000,
+      "duration_ms": 900000,
+      "attributes": {
+        "total_tokens": 120000,
+        "total_tool_uses": 60,
+        "complexity": "complex",
+        "provider": "github"
+      },
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-impl-r",
+      "parent_id": "root-002",
+      "name": "IMPL-LOOP",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709400010000,
+      "end_time_ms": 1709400800000,
+      "duration_ms": 790000,
+      "attributes": {"total_tokens": 110000},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-issue-r1",
+      "parent_id": "span-impl-r",
+      "name": "issue-21",
+      "kind": "issue",
+      "status": "ok",
+      "start_time_ms": 1709400020000,
+      "end_time_ms": 1709400700000,
+      "duration_ms": 680000,
+      "attributes": {"issue_number": 21, "skill_invoked": "issue-impl", "total_tokens": 90000, "tool_uses": 55},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-review-r1",
+      "parent_id": "span-issue-r1",
+      "name": "code-review",
+      "kind": "sub_step",
+      "status": "error",
+      "start_time_ms": 1709400100000,
+      "end_time_ms": 1709400200000,
+      "duration_ms": 100000,
+      "attributes": {"attempt": 1, "verdict": "REQUEST_CHANGES"},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-review-r2",
+      "parent_id": "span-issue-r1",
+      "name": "code-review",
+      "kind": "sub_step",
+      "status": "error",
+      "start_time_ms": 1709400200000,
+      "end_time_ms": 1709400300000,
+      "duration_ms": 100000,
+      "attributes": {"attempt": 2, "verdict": "REQUEST_CHANGES"},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-review-r3",
+      "parent_id": "span-issue-r1",
+      "name": "code-review",
+      "kind": "sub_step",
+      "status": "error",
+      "start_time_ms": 1709400300000,
+      "end_time_ms": 1709400400000,
+      "duration_ms": 100000,
+      "attributes": {"attempt": 3, "verdict": "REQUEST_CHANGES"},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-review-r4",
+      "parent_id": "span-issue-r1",
+      "name": "code-review",
+      "kind": "sub_step",
+      "status": "ok",
+      "start_time_ms": 1709400400000,
+      "end_time_ms": 1709400500000,
+      "duration_ms": 100000,
+      "attributes": {"attempt": 4, "verdict": "APPROVE"},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-report-r",
+      "parent_id": "root-002",
+      "name": "REPORT",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709400800000,
+      "end_time_ms": 1709400890000,
+      "duration_ms": 90000,
+      "attributes": {},
+      "events": [],
+      "notes": null
+    }
+  ]
+}

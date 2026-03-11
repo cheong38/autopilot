@@ -1,0 +1,1 @@
+/Users/woojin/.claude/skills/issue/scripts/lint_skill.py

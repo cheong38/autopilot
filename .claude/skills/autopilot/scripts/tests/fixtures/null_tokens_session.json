@@ -1,0 +1,64 @@
+{
+  "session_id": "null-001",
+  "meta_issue": {"number": 50, "url": "https://github.com/test/repo/issues/50"},
+  "created_at_ms": 1709700000000,
+  "spans": [
+    {
+      "id": "root-005",
+      "parent_id": null,
+      "name": "null-001",
+      "kind": "session",
+      "status": "ok",
+      "start_time_ms": 1709700000000,
+      "end_time_ms": 1709700400000,
+      "duration_ms": 400000,
+      "attributes": {
+        "total_tokens": null,
+        "total_tool_uses": null,
+        "complexity": "simple",
+        "provider": "github"
+      },
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-impl-n",
+      "parent_id": "root-005",
+      "name": "IMPL-LOOP",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709700010000,
+      "end_time_ms": 1709700350000,
+      "duration_ms": 340000,
+      "attributes": {},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-issue-n1",
+      "parent_id": "span-impl-n",
+      "name": "issue-51",
+      "kind": "issue",
+      "status": "ok",
+      "start_time_ms": 1709700020000,
+      "end_time_ms": 1709700300000,
+      "duration_ms": 280000,
+      "attributes": {"issue_number": 51, "skill_invoked": "issue-impl"},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-report-n",
+      "parent_id": "root-005",
+      "name": "REPORT",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709700350000,
+      "end_time_ms": 1709700395000,
+      "duration_ms": 45000,
+      "attributes": {},
+      "events": [],
+      "notes": null
+    }
+  ]
+}

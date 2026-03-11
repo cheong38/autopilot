@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Issue DAG",
+  "description": "Directed Acyclic Graph of issue dependencies stored in Wiki or local file",
+  "type": "object",
+  "required": ["version", "repo", "updated_at", "nodes", "edges"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "repo": {
+      "type": "string",
+      "description": "owner/repo format",
+      "pattern": "^[^/]+/[^/]+$"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "nodes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["title", "type", "status", "keywords", "touched_paths", "created_at"],
+        "properties": {
+          "title": { "type": "string" },
+          "type": { "type": "string", "enum": ["story", "task", "bug"] },
+          "status": { "type": "string", "enum": ["open", "closed"] },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "touched_paths": { "type": "array", "items": { "type": "string" } },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "type": { "type": "string", "enum": ["depends_on", "duplicated_by"] }
+        }
+      }
+    }
+  }
+}
