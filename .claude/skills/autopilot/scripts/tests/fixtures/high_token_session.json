@@ -1,0 +1,77 @@
+{
+  "session_id": "token-001",
+  "meta_issue": {"number": 30, "url": "https://github.com/test/repo/issues/30"},
+  "created_at_ms": 1709500000000,
+  "spans": [
+    {
+      "id": "root-003",
+      "parent_id": null,
+      "name": "token-001",
+      "kind": "session",
+      "status": "ok",
+      "start_time_ms": 1709500000000,
+      "end_time_ms": 1709500090000,
+      "duration_ms": 90000,
+      "attributes": {
+        "total_tokens": 200000,
+        "total_tool_uses": 15,
+        "complexity": "complex",
+        "provider": "github"
+      },
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-ingest-t",
+      "parent_id": "root-003",
+      "name": "INGEST",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709500001000,
+      "end_time_ms": 1709500010000,
+      "duration_ms": 9000,
+      "attributes": {"total_tokens": 150000},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-impl-t",
+      "parent_id": "root-003",
+      "name": "IMPL-LOOP",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709500010000,
+      "end_time_ms": 1709500100000,
+      "duration_ms": 90000,
+      "attributes": {"total_tokens": 40000},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-issue-t1",
+      "parent_id": "span-impl-t",
+      "name": "issue-31",
+      "kind": "issue",
+      "status": "ok",
+      "start_time_ms": 1709500011000,
+      "end_time_ms": 1709500090000,
+      "duration_ms": 79000,
+      "attributes": {"issue_number": 31, "skill_invoked": "issue-impl", "total_tokens": 40000, "tool_uses": 10},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-report-t",
+      "parent_id": "root-003",
+      "name": "REPORT",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709500100000,
+      "end_time_ms": 1709500115000,
+      "duration_ms": 15000,
+      "attributes": {},
+      "events": [],
+      "notes": null
+    }
+  ]
+}

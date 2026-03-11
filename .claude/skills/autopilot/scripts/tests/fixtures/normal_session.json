@@ -1,0 +1,116 @@
+{
+  "session_id": "normal-001",
+  "meta_issue": {"number": 10, "url": "https://github.com/test/repo/issues/10"},
+  "created_at_ms": 1709300000000,
+  "spans": [
+    {
+      "id": "root-001",
+      "parent_id": null,
+      "name": "normal-001",
+      "kind": "session",
+      "status": "ok",
+      "start_time_ms": 1709300000000,
+      "end_time_ms": 1709300600000,
+      "duration_ms": 600000,
+      "attributes": {
+        "total_tokens": 50000,
+        "total_tool_uses": 25,
+        "complexity": "complex",
+        "provider": "github"
+      },
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-classify",
+      "parent_id": "root-001",
+      "name": "CLASSIFY",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709300001000,
+      "end_time_ms": 1709300010000,
+      "duration_ms": 9000,
+      "attributes": {},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-ingest",
+      "parent_id": "root-001",
+      "name": "INGEST",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709300010000,
+      "end_time_ms": 1709300030000,
+      "duration_ms": 20000,
+      "attributes": {"total_tokens": 5000},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-impl",
+      "parent_id": "root-001",
+      "name": "IMPL-LOOP",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709300030000,
+      "end_time_ms": 1709300500000,
+      "duration_ms": 470000,
+      "attributes": {"total_tokens": 40000},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-issue-1",
+      "parent_id": "span-impl",
+      "name": "issue-1",
+      "kind": "issue",
+      "status": "ok",
+      "start_time_ms": 1709300031000,
+      "end_time_ms": 1709300250000,
+      "duration_ms": 219000,
+      "attributes": {"issue_number": 11, "skill_invoked": "issue-impl", "total_tokens": 20000, "tool_uses": 10},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-review-1",
+      "parent_id": "span-issue-1",
+      "name": "code-review",
+      "kind": "sub_step",
+      "status": "ok",
+      "start_time_ms": 1709300200000,
+      "end_time_ms": 1709300240000,
+      "duration_ms": 40000,
+      "attributes": {"attempt": 1, "verdict": "APPROVE"},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-issue-2",
+      "parent_id": "span-impl",
+      "name": "issue-2",
+      "kind": "issue",
+      "status": "ok",
+      "start_time_ms": 1709300260000,
+      "end_time_ms": 1709300490000,
+      "duration_ms": 230000,
+      "attributes": {"issue_number": 12, "skill_invoked": "issue-impl", "total_tokens": 20000, "tool_uses": 12},
+      "events": [],
+      "notes": null
+    },
+    {
+      "id": "span-report",
+      "parent_id": "root-001",
+      "name": "REPORT",
+      "kind": "step",
+      "status": "ok",
+      "start_time_ms": 1709300500000,
+      "end_time_ms": 1709300590000,
+      "duration_ms": 90000,
+      "attributes": {},
+      "events": [],
+      "notes": null
+    }
+  ]
+}
