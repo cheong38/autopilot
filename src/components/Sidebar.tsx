@@ -24,7 +24,7 @@ const navItems = [
 ] as const;
 
 export default function Sidebar() {
-  const { currentProject, setCurrentProject } = useApp();
+  const { currentProject, setCurrentProject, openChatDefault } = useApp();
 
   return (
     <aside className="flex h-screen w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
@@ -87,17 +87,22 @@ export default function Sidebar() {
 
       <Separator />
 
-      {/* Chat button placeholder (Phase 5) */}
+      {/* Chat with OP button */}
       <div className="p-3">
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="outline" size="lg" className="w-full gap-2">
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full gap-2"
+              onClick={() => openChatDefault()}
+            >
               <MessageCircle className="size-4" />
-              Chat
+              Chat with OP
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">
-            <p>AI Chat (coming soon)</p>
+            <p>Chat with OP (오피)</p>
           </TooltipContent>
         </Tooltip>
       </div>

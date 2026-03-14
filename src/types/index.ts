@@ -48,6 +48,33 @@ export interface Session {
   color: string;
 }
 
+// Chat types
+export interface ChatMessage {
+  id: string;
+  role: "op" | "user";
+  content: string;
+  timestamp: string;
+  options?: ChatOption[];
+  ulViolation?: {
+    unknownTerm: string;
+    suggestedTerm?: string;
+  };
+}
+
+export interface ChatOption {
+  label: string;
+  value: string;
+  recommended?: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  projectId: string;
+  hiItemId?: string;
+  messages: ChatMessage[];
+  status: "active" | "resolved";
+}
+
 export type KanbanColumnId = "discussing" | "todo" | "in_progress" | "verifying" | "done" | "failed" | "deferred";
 
 export interface KanbanColumnConfig {

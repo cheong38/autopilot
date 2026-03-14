@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { mockProjects } from "@/data/mock-projects";
+import { useApp } from "@/context/AppContext";
 import type { HiItem } from "@/types";
 
 function timeAgo(dateStr: string): string {
@@ -22,9 +23,10 @@ interface HiQueueItemProps {
 
 export default function HiQueueItem({ item }: HiQueueItemProps) {
   const project = mockProjects.find((p) => p.id === item.projectId);
+  const { openChatForHiItem } = useApp();
 
   const handleClick = () => {
-    console.log("[HI Queue] Opening chat for item:", item.id, item.promptText);
+    openChatForHiItem(item.id);
   };
 
   return (
