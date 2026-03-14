@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import HomePage from "@/pages/HomePage";
 import DagPage from "@/pages/DagPage";
 import SettingsPage from "@/pages/SettingsPage";
+import AgentsPage from "@/pages/AgentsPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/agents" element={<AgentsPage />} />
               <Route path="/dag" element={<DagPage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>

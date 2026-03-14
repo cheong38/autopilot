@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { House, GitBranch, Settings, MessageCircle, ChevronsUpDown, Check } from "lucide-react";
+import { House, GitBranch, Settings, MessageCircle, ChevronsUpDown, Check, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ import { useApp } from "@/context/AppContext";
 
 const navItems = [
   { to: "/", label: "Home", icon: House },
+  { to: "/agents", label: "Agents", icon: Bot },
   { to: "/dag", label: "DAG", icon: GitBranch },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
