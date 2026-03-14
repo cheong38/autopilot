@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { House, GitBranch, Settings, MessageCircle, ChevronsUpDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { mockProjects, type Project } from "@/data/mock-projects";
+import { mockProjects } from "@/data/mock-projects";
+import { useApp } from "@/context/AppContext";
 
 const navItems = [
   { to: "/", label: "Home", icon: House },
@@ -24,7 +24,7 @@ const navItems = [
 ] as const;
 
 export default function Sidebar() {
-  const [currentProject, setCurrentProject] = useState<Project>(mockProjects[0]);
+  const { currentProject, setCurrentProject } = useApp();
 
   return (
     <aside className="flex h-screen w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
