@@ -8,7 +8,7 @@ export default function ConfigSettings() {
   const [confidence, setConfidence] = useState(99);
   const [maxRounds, setMaxRounds] = useState(3);
 
-  function handleSave(e: React.FormEvent) {
+  function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     console.log("Save config:", { concurrency, confidence, maxRounds });
   }

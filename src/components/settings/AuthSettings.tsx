@@ -10,7 +10,7 @@ export default function AuthSettings() {
   const [showClaude, setShowClaude] = useState(false);
   const [showGithub, setShowGithub] = useState(false);
 
-  function handleSave(e: React.FormEvent) {
+  function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     console.log("Save auth settings:", {
       claudeToken: claudeToken ? "***" : "(empty)",

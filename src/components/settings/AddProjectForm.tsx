@@ -8,7 +8,7 @@ export default function AddProjectForm() {
   const [name, setName] = useState("");
   const [remoteUrl, setRemoteUrl] = useState("");
 
-  function handleAdd(e: React.FormEvent) {
+  function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     console.log("Add project:", { name, remoteUrl });
     setName("");
