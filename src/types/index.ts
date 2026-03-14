@@ -27,6 +27,7 @@ export interface Issue {
   prUrl?: string;
   sessionId: string;
   description?: string;
+  requirementIds?: string[];
 }
 
 export interface HiItem {

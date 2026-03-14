@@ -45,7 +45,8 @@ export const mockIssues: Issue[] = [
     prNumber: 5,
     prUrl: "https://github.com/cheong38/autopilot/pull/5",
     sessionId: "session-1",
-    description: "Create a full UI prototype with Kanban board and HI queue using mock data",
+    description: "Create a full UI prototype with Kanban board and HI queue using mock data. Includes project sidebar, session management, and interactive card details.",
+    requirementIds: ["REQ-001", "REQ-002"],
   },
   {
     id: "issue-2",
@@ -57,7 +58,8 @@ export const mockIssues: Issue[] = [
     status: "backlog",
     verified: false,
     sessionId: "session-1",
-    description: "Render a directed acyclic graph showing issue dependency relationships",
+    description: "Render a directed acyclic graph showing issue dependency relationships. Users should be able to see which issues block others and navigate the dependency tree.",
+    requirementIds: ["REQ-003"],
   },
   {
     id: "issue-3",
@@ -71,6 +73,7 @@ export const mockIssues: Issue[] = [
     prNumber: 8,
     prUrl: "https://github.com/cheong38/autopilot/pull/8",
     sessionId: "session-1",
+    description: "Add a dark mode toggle to the settings page that persists user preference in local storage and applies the theme globally.",
   },
   {
     id: "issue-4",
@@ -84,6 +87,7 @@ export const mockIssues: Issue[] = [
     prNumber: 10,
     prUrl: "https://github.com/cheong38/autopilot/pull/10",
     sessionId: "session-1",
+    description: "When navigating between pages, the sidebar project switcher resets to the first project instead of maintaining the selected project.",
   },
   {
     id: "issue-5",
@@ -95,6 +99,7 @@ export const mockIssues: Issue[] = [
     status: "discussing",
     verified: false,
     sessionId: "session-1",
+    description: "Each Kanban card should display a color bar indicating which session it belongs to, making it easy to visually distinguish work streams.",
   },
   // autopilot — session 2 (Backend Integration)
   {
@@ -107,7 +112,8 @@ export const mockIssues: Issue[] = [
     status: "ready",
     verified: false,
     sessionId: "session-2",
-    description: "Wire up Tauri commands for creating, reading, updating, and deleting projects",
+    description: "Wire up Tauri commands for creating, reading, updating, and deleting projects via the IPC bridge.",
+    requirementIds: ["REQ-004"],
   },
   {
     id: "issue-7",
@@ -121,6 +127,8 @@ export const mockIssues: Issue[] = [
     prNumber: 14,
     prUrl: "https://github.com/cheong38/autopilot/pull/14",
     sessionId: "session-2",
+    description: "Set up a WebSocket connection to stream real-time events from the backend, including issue status changes and session updates.",
+    requirementIds: ["REQ-005"],
   },
   {
     id: "issue-8",
@@ -147,7 +155,8 @@ export const mockIssues: Issue[] = [
     prNumber: 43,
     prUrl: "https://github.com/cheong38/e-commerce-api/pull/43",
     sessionId: "session-3",
-    description: "Update /api/v1/payments to /api/v2/payments with new request/response format",
+    description: "Update /api/v1/payments to /api/v2/payments with new request/response format. Includes schema validation and backward-compatible error codes.",
+    requirementIds: ["REQ-010", "REQ-011"],
   },
   {
     id: "issue-10",
@@ -159,6 +168,7 @@ export const mockIssues: Issue[] = [
     status: "created",
     verified: false,
     sessionId: "session-3",
+    description: "Implement token-bucket rate limiting for all v2 API endpoints. Configure per-client limits and return proper 429 responses with Retry-After headers.",
   },
   {
     id: "issue-11",
@@ -172,6 +182,7 @@ export const mockIssues: Issue[] = [
     prNumber: 46,
     prUrl: "https://github.com/cheong38/e-commerce-api/pull/46",
     sessionId: "session-3",
+    description: "Cart totals show incorrect amounts when discount percentages produce repeating decimals. Root cause is floating-point arithmetic; fix uses integer cents internally.",
   },
   {
     id: "issue-12",
@@ -183,6 +194,7 @@ export const mockIssues: Issue[] = [
     status: "deferred",
     verified: false,
     sessionId: "session-3",
+    description: "Mark legacy v1 webhook handlers as deprecated and add deprecation warnings to API responses. Full removal planned for next major version.",
   },
   {
     id: "issue-13",
@@ -196,6 +208,8 @@ export const mockIssues: Issue[] = [
     prNumber: 49,
     prUrl: "https://github.com/cheong38/e-commerce-api/pull/49",
     sessionId: "session-3",
+    description: "Bi-directional sync between the e-commerce inventory system and the warehouse management API. Handles conflict resolution and stock level reconciliation.",
+    requirementIds: ["REQ-012"],
   },
 ];
 

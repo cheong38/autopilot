@@ -27,19 +27,16 @@ const statusLabels: Record<IssueStatus, string> = {
 
 interface KanbanCardProps {
   issue: Issue;
+  onClick?: (issue: Issue) => void;
 }
 
-export default function KanbanCard({ issue }: KanbanCardProps) {
+export default function KanbanCard({ issue, onClick }: KanbanCardProps) {
   const session = mockSessions.find((s) => s.id === issue.sessionId);
-
-  const handleClick = () => {
-    console.log("[Kanban] Card clicked:", issue.id, issue.title);
-  };
 
   return (
     <Card
       className="cursor-pointer gap-0 overflow-hidden border-border py-0 transition-shadow hover:shadow-md"
-      onClick={handleClick}
+      onClick={() => onClick?.(issue)}
     >
       {/* Session color bar */}
       <div

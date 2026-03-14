@@ -15,9 +15,10 @@ const columnBgStyles: Record<string, string> = {
 interface KanbanColumnProps {
   config: KanbanColumnConfig;
   issues: Issue[];
+  onCardClick?: (issue: Issue) => void;
 }
 
-export default function KanbanColumn({ config, issues }: KanbanColumnProps) {
+export default function KanbanColumn({ config, issues, onCardClick }: KanbanColumnProps) {
   return (
     <div
       className={`flex h-full w-64 shrink-0 flex-col rounded-lg ${
@@ -40,7 +41,7 @@ export default function KanbanColumn({ config, issues }: KanbanColumnProps) {
       {/* Cards */}
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2">
         {issues.map((issue) => (
-          <KanbanCard key={issue.id} issue={issue} />
+          <KanbanCard key={issue.id} issue={issue} onClick={onCardClick} />
         ))}
         {issues.length === 0 && (
           <div className="flex flex-1 items-center justify-center py-8">
