@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import type { ChatMessage } from "@/types";
 import {
   mockConversations,
@@ -12,60 +12,48 @@ interface UseChatConversationReturn {
   selectOption: (value: string, label: string) => void;
   hasOptions: boolean;
   currentOptions: ChatMessage["options"] | undefined;
-  isFreeinput: boolean;
+  isFreeInput: boolean;
 }
 
 export function useChatConversation(
   conversationId: string | null
 ): UseChatConversationReturn {
-  // Find the initial messages for this conversation
-  const initialConv = conversationId
-    ? mockConversations.find((c) => c.id === conversationId)
-    : null;
-
-  const [messages, setMessages] = useState<ChatMessage[]>(
-    initialConv ? [...initialConv.messages] : []
-  );
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const stepRef = useRef(0);
-  const prevConvIdRef = useRef(conversationId);
 
   // Reset state when conversation changes
-  if (conversationId !== prevConvIdRef.current) {
-    prevConvIdRef.current = conversationId;
+  useEffect(() => {
     const conv = conversationId
       ? mockConversations.find((c) => c.id === conversationId)
       : null;
     setMessages(conv ? [...conv.messages] : []);
     stepRef.current = 0;
     setIsTyping(false);
-  }
+  }, [conversationId]);
 
-  const appendOpResponse = useCallback(
-    (_userMsg: ChatMessage) => {
-      if (!conversationId) return;
-      const script = conversationScripts[conversationId];
-      if (!script) return;
+  const appendOpResponse = useCallback(() => {
+    if (!conversationId) return;
+    const script = conversationScripts[conversationId];
+    if (!script) return;
 
-      const nextStep = stepRef.current + 1;
-      const scriptEntry = script[nextStep];
-      if (!scriptEntry) return;
+    const nextStep = stepRef.current + 1;
+    const scriptEntry = script[nextStep];
+    if (!scriptEntry) return;
 
-      setIsTyping(true);
+    setIsTyping(true);
 
-      setTimeout(() => {
-        const opMsg: ChatMessage = {
-          ...scriptEntry.response,
-          id: `msg-live-${Date.now()}-op`,
-          timestamp: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, opMsg]);
-        setIsTyping(false);
-        stepRef.current = nextStep;
-      }, 700);
-    },
-    [conversationId]
-  );
+    setTimeout(() => {
+      const opMsg: ChatMessage = {
+        ...scriptEntry.response,
+        id: `msg-live-${Date.now()}-op`,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, opMsg]);
+      setIsTyping(false);
+      stepRef.current = nextStep;
+    }, 700);
+  }, [conversationId]);
 
   const sendMessage = useCallback(
     (text: string) => {
@@ -76,7 +64,7 @@ export function useChatConversation(
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, userMsg]);
-      appendOpResponse(userMsg);
+      appendOpResponse();
     },
     [appendOpResponse]
   );
@@ -90,7 +78,7 @@ export function useChatConversation(
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, userMsg]);
-      appendOpResponse(userMsg);
+      appendOpResponse();
     },
     [appendOpResponse]
   );
@@ -100,8 +88,8 @@ export function useChatConversation(
   const hasOptions = !!(lastMessage?.role === "op" && lastMessage.options?.length);
   const currentOptions = hasOptions ? lastMessage.options : undefined;
 
-  // Free input mode: last OP message has no options, or there's no OP message at all (conv-3 initial)
-  const isFreeinput =
+  // Free input mode: last OP message has no options
+  const isFreeInput =
     !hasOptions &&
     !isTyping &&
     messages.length > 0 &&
@@ -115,6 +103,6 @@ export function useChatConversation(
     selectOption,
     hasOptions,
     currentOptions,
-    isFreeinput,
+    isFreeInput,
   };
 }

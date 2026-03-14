@@ -19,7 +19,7 @@ export default function ChatPopover() {
     selectOption,
     hasOptions,
     currentOptions,
-    isFreeinput,
+    isFreeInput,
   } = useChatConversation(activeChatConversationId);
 
   const [freeText, setFreeText] = useState("");
@@ -139,7 +139,7 @@ export default function ChatPopover() {
           />
         )}
 
-        {isFreeinput && (
+        {isFreeInput && (
           <div className="flex items-end gap-2 border-t border-border px-4 py-3">
             <textarea
               value={freeText}
