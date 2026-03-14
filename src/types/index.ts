@@ -82,3 +82,52 @@ export interface KanbanColumnConfig {
   title: string;
   statuses: IssueStatus[];
 }
+
+// Agent observability types
+
+export type AgentSessionStatus = "queued" | "running" | "completed" | "failed";
+
+export interface AgentSession {
+  id: string;
+  projectId: string;
+  issueId: string | null;
+  sessionId: string;
+  status: AgentSessionStatus;
+  currentStep: string;
+  startedAt: string;
+  endedAt: string | null;
+  slotIndex: number;
+  /** Color assigned for visual identification */
+  color: string;
+  /** Model used (e.g. "claude-sonnet-4-20250514") */
+  model: string;
+  /** Running counters */
+  eventCount: number;
+  toolCount: number;
+}
+
+export type AgentEventSource = "orchestration" | "hook";
+
+export interface AgentEvent {
+  id: string;
+  agentSessionId: string;
+  source: AgentEventSource;
+  eventType: string;
+  toolName: string | null;
+  payload: Record<string, unknown>;
+  timestamp: string;
+}
+
+export type AgentTraceLevel = "session" | "step" | "cli_call" | "tool_use";
+
+export interface AgentTrace {
+  id: string;
+  agentSessionId: string;
+  parentTraceId: string | null;
+  level: AgentTraceLevel;
+  label: string;
+  startedAt: string;
+  endedAt: string | null;
+  metadata: Record<string, unknown>;
+  children?: AgentTrace[];
+}
