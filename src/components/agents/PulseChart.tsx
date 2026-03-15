@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useMemo } from "react";
 import type { AgentEvent, AgentSession } from "@/types";
+import { useApp } from "@/context/AppContext";
 
 interface PulseChartProps {
   events: AgentEvent[];
@@ -20,6 +21,7 @@ const WINDOWS: TimeWindow[] = ["1m", "3m", "5m", "10m"];
 export default function PulseChart({ events, sessions }: PulseChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("5m");
+  const { isDark } = useApp();
 
   // Use a fixed "now" based on the latest event for demo purposes
   const now = useMemo(() => {
@@ -79,6 +81,27 @@ export default function PulseChart({ events, sessions }: PulseChartProps) {
 
     ctx.clearRect(0, 0, w, h);
 
+    // Theme-aware colors
+    const colors = isDark
+      ? {
+          gridLine: "rgba(255, 255, 255, 0.06)",
+          axisLabel: "#64748b",
+          eventBar: "rgba(129, 140, 248, 0.35)",
+          toolBar: "#22d3ee",
+          toolBarAlpha: "rgba(34, 211, 238, 0.8)",
+          agentLine: "#fbbf24",
+          agentDot: "#fbbf24",
+        }
+      : {
+          gridLine: "#e5e7eb",
+          axisLabel: "#9ca3af",
+          eventBar: "rgba(99, 102, 241, 0.25)",
+          toolBar: "#06b6d4",
+          toolBarAlpha: "rgba(6, 182, 212, 0.8)",
+          agentLine: "#f59e0b",
+          agentDot: "#f59e0b",
+        };
+
     const padding = { top: 20, right: 16, bottom: 30, left: 40 };
     const chartW = w - padding.left - padding.right;
     const chartH = h - padding.top - padding.bottom;
@@ -92,50 +115,60 @@ export default function PulseChart({ events, sessions }: PulseChartProps) {
 
     const barWidth = chartW / bucketCount;
 
-    // Grid lines
-    ctx.strokeStyle = "#e5e7eb";
+    // Grid lines with labels
     ctx.lineWidth = 0.5;
     const gridLines = 4;
     for (let i = 0; i <= gridLines; i++) {
       const y = padding.top + chartH - (chartH * i) / gridLines;
+
+      ctx.strokeStyle = colors.gridLine;
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
       ctx.lineTo(w - padding.right, y);
       ctx.stroke();
 
-      ctx.fillStyle = "#9ca3af";
-      ctx.font = "10px 'Geist Variable', monospace";
+      ctx.fillStyle = colors.axisLabel;
+      ctx.font = "10px 'Geist Mono', ui-monospace, monospace";
       ctx.textAlign = "right";
       const label = Math.round((maxVal * i) / gridLines);
       ctx.fillText(String(label), padding.left - 6, y + 3);
     }
 
-    // Event rate bars (background)
-    ctx.globalAlpha = 0.3;
+    // Event rate bars (background) with rounded top
     eventBuckets.forEach((val, i) => {
       const x = padding.left + i * barWidth;
       const barH = (val / maxVal) * chartH;
-      ctx.fillStyle = "#6366f1";
-      ctx.fillRect(x + 1, padding.top + chartH - barH, barWidth - 2, barH);
+      if (barH < 1) return;
+      ctx.fillStyle = colors.eventBar;
+      const radius = Math.min(3, barH / 2);
+      ctx.beginPath();
+      ctx.roundRect(x + 1, padding.top + chartH - barH, barWidth - 2, barH, [radius, radius, 0, 0]);
+      ctx.fill();
     });
-    ctx.globalAlpha = 1;
 
-    // Tool call bars (foreground)
+    // Tool call bars (foreground) with rounded top
     toolBuckets.forEach((val, i) => {
       const x = padding.left + i * barWidth;
       const barH = (val / maxVal) * chartH;
-      ctx.fillStyle = "#06b6d4";
-      ctx.fillRect(
+      if (barH < 1) return;
+      ctx.fillStyle = colors.toolBarAlpha;
+      const radius = Math.min(3, barH / 2);
+      ctx.beginPath();
+      ctx.roundRect(
         x + barWidth * 0.15,
         padding.top + chartH - barH,
         barWidth * 0.7,
-        barH
+        barH,
+        [radius, radius, 0, 0]
       );
+      ctx.fill();
     });
 
-    // Active agent line
-    ctx.strokeStyle = "#f59e0b";
+    // Active agent line with glow
+    ctx.strokeStyle = colors.agentLine;
     ctx.lineWidth = 2;
+    ctx.shadowColor = colors.agentLine;
+    ctx.shadowBlur = 6;
     ctx.beginPath();
     activeBuckets.forEach((val, i) => {
       const x = padding.left + i * barWidth + barWidth / 2;
@@ -144,6 +177,7 @@ export default function PulseChart({ events, sessions }: PulseChartProps) {
       else ctx.lineTo(x, y);
     });
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Active agent dots
     activeBuckets.forEach((val, i) => {
@@ -151,13 +185,16 @@ export default function PulseChart({ events, sessions }: PulseChartProps) {
       const y = padding.top + chartH - (val / maxVal) * chartH;
       ctx.beginPath();
       ctx.arc(x, y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = "#f59e0b";
+      ctx.fillStyle = colors.agentDot;
       ctx.fill();
+      ctx.strokeStyle = isDark ? "#1e293b" : "#ffffff";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
     });
 
     // X-axis time labels
-    ctx.fillStyle = "#9ca3af";
-    ctx.font = "10px 'Geist Variable', monospace";
+    ctx.fillStyle = colors.axisLabel;
+    ctx.font = "10px 'Geist Mono', ui-monospace, monospace";
     ctx.textAlign = "center";
     const startTime = now - windowMs;
     const labelInterval = Math.max(1, Math.floor(bucketCount / 5));
@@ -167,35 +204,35 @@ export default function PulseChart({ events, sessions }: PulseChartProps) {
       const x = padding.left + i * barWidth + barWidth / 2;
       ctx.fillText(label, x, h - padding.bottom + 16);
     }
-  }, [eventBuckets, toolBuckets, activeBuckets, bucketCount, now, windowMs, bucketMs]);
+  }, [eventBuckets, toolBuckets, activeBuckets, bucketCount, now, windowMs, bucketMs, isDark]);
 
   return (
-    <div className="rounded-lg border border-border bg-card">
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
+    <div className="rounded-xl border border-border bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <h3 className="text-sm font-semibold">Pulse Chart</h3>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span className="inline-block size-2.5 rounded-sm bg-indigo-500 opacity-30" />
               Events
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span className="inline-block size-2.5 rounded-sm bg-cyan-500" />
               Tools
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-1.5">
               <span className="inline-block size-2.5 rounded-full bg-amber-500" />
-              Active agents
+              Active
             </span>
           </div>
-          <div className="flex rounded-md border border-border overflow-hidden">
+          <div className="flex rounded-lg border border-border overflow-hidden">
             {WINDOWS.map((w) => (
               <button
                 key={w}
-                className={`px-2 py-0.5 text-xs font-medium transition-colors ${
+                className={`px-2.5 py-1 font-technical text-xs font-medium transition-colors ${
                   w === timeWindow
                     ? "bg-primary text-primary-foreground"
-                    : "hover:bg-accent"
+                    : "hover:bg-accent text-muted-foreground"
                 }`}
                 onClick={() => setTimeWindow(w)}
               >

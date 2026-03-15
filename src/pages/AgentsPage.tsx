@@ -23,14 +23,14 @@ export default function AgentsPage() {
   );
 
   return (
-    <div className="flex flex-col gap-4 p-6">
+    <div className="flex flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold">Agents</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-lg font-semibold tracking-tight">Agents</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
             {currentProject
               ? `Scoped to ${currentProject.name}`
-              : "Global view — all projects"}
+              : "Global view -- all projects"}
           </p>
         </div>
 
@@ -38,7 +38,7 @@ export default function AgentsPage() {
         <div className="flex items-center gap-2">
           <label className="text-xs text-muted-foreground">Trace session:</label>
           <select
-            className="rounded border border-border bg-background px-2 py-1 text-xs"
+            className="rounded-md border border-border bg-background px-2.5 py-1.5 font-technical text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring"
             value={selectedSessionId ?? ""}
             onChange={(e) =>
               setSelectedSessionId(e.target.value || null)
@@ -54,7 +54,7 @@ export default function AgentsPage() {
         </div>
       </div>
 
-      {/* Swim Lanes — canvas-based timeline */}
+      {/* Swim Lanes -- canvas-based timeline */}
       <SwimLanes sessions={scopedSessions} events={scopedEvents} />
 
       {/* Middle row: Pulse Chart + Event Feed side by side */}
@@ -63,7 +63,7 @@ export default function AgentsPage() {
         <EventFeed events={scopedEvents} projectId={currentProject?.id} />
       </div>
 
-      {/* Trace Tree — expandable hierarchical view */}
+      {/* Trace Tree -- expandable hierarchical view */}
       <TraceTree traces={mockAgentTraces} selectedSessionId={selectedSessionId} />
     </div>
   );

@@ -127,3 +127,92 @@
     @apply font-sans;
     }
 }
+
+/* ── Dark mode toggle transition ── */
+html {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* ── Pulse animation for running status dots ── */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+}
+.animate-status-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* ── Page transition fade ── */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-page-enter {
+  animation: page-enter 0.25s ease-out;
+}
+
+/* ── Panel expand/collapse ── */
+@keyframes panel-expand {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 600px; }
+}
+.animate-panel-expand {
+  animation: panel-expand 0.2s ease-out;
+  overflow: hidden;
+}
+
+/* ── Hover lift for cards ── */
+.hover-lift {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.dark .hover-lift:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Sidebar active indicator bar ── */
+.nav-active-bar {
+  position: relative;
+}
+.nav-active-bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-primary);
+  transition: opacity 0.15s ease;
+}
+
+/* ── Monospace for technical values ── */
+.font-technical {
+  font-family: 'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Waterfall bar gradient ── */
+.waterfall-bar {
+  background: linear-gradient(90deg, var(--waterfall-color) 0%, color-mix(in oklch, var(--waterfall-color), transparent 40%) 100%);
+}
+
+/* ── React Flow dark mode overrides ── */
+.dark .react-flow__background {
+  background-color: var(--color-background);
+}
+.dark .react-flow__minimap {
+  background-color: var(--color-card) !important;
+}
+.dark .react-flow__controls button {
+  background-color: var(--color-card) !important;
+  color: var(--color-foreground) !important;
+  border-color: var(--color-border) !important;
+}
+.dark .react-flow__controls button:hover {
+  background-color: var(--color-accent) !important;
+}

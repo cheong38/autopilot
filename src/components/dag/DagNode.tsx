@@ -60,20 +60,20 @@ function DagNodeComponent({ data }: NodeProps<DagNodeType>) {
 
       <div
         className={cn(
-          "w-[240px] rounded-lg border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-md cursor-pointer overflow-hidden",
-          isExternal && "opacity-60 border-dashed border-muted-foreground/40"
+          "w-[240px] rounded-xl border bg-card text-card-foreground shadow-md transition-all duration-150 hover:shadow-lg cursor-pointer overflow-hidden",
+          isExternal && "opacity-50 border-dashed border-muted-foreground/40"
         )}
       >
         {/* Session color bar */}
         <div
-          className="h-1 w-full"
+          className="h-1.5 w-full"
           style={{ backgroundColor: sessionColor }}
         />
 
         <div className="flex flex-col gap-1.5 p-3">
           {/* Header row: issue number + type badge */}
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className="font-technical text-xs font-medium text-muted-foreground">
               #{issue.issueNumber}
               {isExternal && (
                 <span className="ml-1 text-[10px] text-muted-foreground/70">

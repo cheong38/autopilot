@@ -35,7 +35,7 @@ function renderContent(text: string) {
       parts.push(
         <code
           key={keyIdx++}
-          className="rounded bg-muted px-1 py-0.5 text-xs font-mono"
+          className="rounded bg-muted px-1.5 py-0.5 font-technical text-xs"
         >
           {match[3]}
         </code>
@@ -72,7 +72,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className={cn("flex gap-2", isOp ? "justify-start" : "justify-end")}>
       {isOp && (
-        <div className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10">
+        <div className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/5">
           <Sparkles className="size-3.5 text-primary" />
         </div>
       )}
@@ -103,7 +103,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {/* Message bubble */}
         <div
           className={cn(
-            "rounded-2xl px-3.5 py-2 text-sm leading-relaxed",
+            "rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm",
             isOp
               ? "rounded-tl-sm bg-muted text-foreground"
               : "rounded-tr-sm bg-primary text-primary-foreground"

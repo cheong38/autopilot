@@ -41,7 +41,7 @@ export default function ChatOptions({
   };
 
   return (
-    <div className="flex flex-col gap-2 border-t border-border bg-card px-4 py-3">
+    <div className="flex flex-col gap-2 border-t border-border bg-card/50 px-4 py-3">
       {!showCustomInput ? (
         <div className="flex flex-col gap-1.5">
           {options.map((option) => (
@@ -49,12 +49,15 @@ export default function ChatOptions({
               key={option.value}
               onClick={() => handleOptionClick(option)}
               className={cn(
-                "rounded-lg border px-3 py-2 text-left text-sm transition-colors hover:bg-accent",
+                "rounded-lg border px-3 py-2 text-left text-sm transition-all duration-150",
                 option.recommended
-                  ? "border-primary/40 bg-primary/5 font-medium text-foreground hover:bg-primary/10"
-                  : "border-border text-foreground/80"
+                  ? "border-primary/40 bg-primary/5 font-medium text-foreground hover:bg-primary/10 hover:border-primary/60 hover:shadow-sm"
+                  : "border-border text-foreground/80 hover:bg-accent hover:border-border hover:shadow-sm"
               )}
             >
+              {option.recommended && (
+                <span className="mr-1.5 text-xs text-primary">*</span>
+              )}
               {option.label}
             </button>
           ))}
@@ -66,7 +69,7 @@ export default function ChatOptions({
             onChange={(e) => setCustomText(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your response..."
-            className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
             rows={2}
             autoFocus
           />
@@ -74,7 +77,7 @@ export default function ChatOptions({
             size="icon"
             onClick={handleCustomSend}
             disabled={!customText.trim()}
-            className="shrink-0"
+            className="shrink-0 transition-transform hover:scale-105"
           >
             <Send className="size-4" />
           </Button>

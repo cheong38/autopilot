@@ -19,12 +19,12 @@ export default function HiQueue() {
     <section className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <MessageCircleWarning className="size-4 text-amber-500" />
-        <h2 className="text-sm font-semibold tracking-tight">
+        <h2 className="text-lg font-semibold tracking-tight">
           Human Intervention Queue
         </h2>
         <Badge
-          variant="secondary"
-          className="size-5 justify-center rounded-full p-0 text-xs font-semibold"
+          variant="destructive"
+          className="size-5 justify-center rounded-full p-0 text-[10px] font-bold"
         >
           {pendingItems.length}
         </Badge>

@@ -13,17 +13,17 @@ import ConfigSettings from "@/components/settings/ConfigSettings";
 
 export default function SettingsPage() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <h1 className="text-lg font-semibold tracking-tight">Settings</h1>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Manage projects, authentication, and configuration.
         </p>
       </div>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
-          <CardTitle>Projects</CardTitle>
+          <CardTitle className="text-base">Projects</CardTitle>
           <CardDescription>
             Registered projects and their remote repositories.
           </CardDescription>
@@ -37,9 +37,9 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
-          <CardTitle>Authentication</CardTitle>
+          <CardTitle className="text-base">Authentication</CardTitle>
           <CardDescription>
             API tokens for Claude Code and source-control providers.
           </CardDescription>
@@ -49,9 +49,9 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="shadow-sm">
         <CardHeader>
-          <CardTitle>Configuration</CardTitle>
+          <CardTitle className="text-base">Configuration</CardTitle>
           <CardDescription>
             Autopilot runtime parameters.
           </CardDescription>
