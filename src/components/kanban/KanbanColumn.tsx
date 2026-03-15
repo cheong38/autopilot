@@ -3,13 +3,23 @@ import type { Issue, KanbanColumnConfig } from "@/types";
 import KanbanCard from "./KanbanCard";
 
 const columnBgStyles: Record<string, string> = {
-  discussing: "bg-purple-500/5",
-  todo: "bg-slate-500/5",
-  in_progress: "bg-blue-500/5",
-  verifying: "bg-amber-500/5",
-  done: "bg-emerald-500/5",
-  failed: "bg-rose-500/5",
-  deferred: "bg-slate-500/5",
+  discussing: "bg-purple-500/5 dark:bg-purple-500/10",
+  todo: "bg-slate-500/5 dark:bg-slate-500/10",
+  in_progress: "bg-blue-500/5 dark:bg-blue-500/10",
+  verifying: "bg-amber-500/5 dark:bg-amber-500/10",
+  done: "bg-emerald-500/5 dark:bg-emerald-500/10",
+  failed: "bg-rose-500/5 dark:bg-rose-500/10",
+  deferred: "bg-slate-500/5 dark:bg-slate-500/10",
+};
+
+const columnCountColors: Record<string, string> = {
+  discussing: "bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300",
+  todo: "bg-slate-100 text-slate-700 dark:bg-slate-800/50 dark:text-slate-300",
+  in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300",
+  verifying: "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300",
+  done: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300",
+  failed: "bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300",
+  deferred: "bg-slate-100 text-slate-700 dark:bg-slate-800/50 dark:text-slate-300",
 };
 
 interface KanbanColumnProps {
@@ -21,18 +31,19 @@ interface KanbanColumnProps {
 export default function KanbanColumn({ config, issues, onCardClick }: KanbanColumnProps) {
   return (
     <div
-      className={`flex h-full w-64 shrink-0 flex-col rounded-lg ${
+      className={`flex h-full w-64 shrink-0 flex-col rounded-xl border border-border/50 ${
         columnBgStyles[config.id] ?? "bg-muted/30"
       }`}
     >
       {/* Column header */}
-      <div className="flex items-center gap-2 px-3 py-2.5">
+      <div className="flex items-center gap-2 px-3 py-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {config.title}
         </h3>
         <Badge
-          variant="secondary"
-          className="size-5 justify-center rounded-full p-0 text-[10px] font-semibold"
+          className={`size-5 justify-center rounded-full border-none p-0 text-[10px] font-bold ${
+            columnCountColors[config.id] ?? "bg-muted text-muted-foreground"
+          }`}
         >
           {issues.length}
         </Badge>

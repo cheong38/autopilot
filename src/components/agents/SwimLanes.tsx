@@ -2,6 +2,7 @@ import { useRef, useEffect, useMemo } from "react";
 import type { AgentSession, AgentEvent } from "@/types";
 import { mockIssues } from "@/data/mock-data";
 import { mockProjects } from "@/data/mock-projects";
+import { useApp } from "@/context/AppContext";
 
 interface SwimLanesProps {
   sessions: AgentSession[];
@@ -30,6 +31,7 @@ function getToolColor(toolName: string | null): string {
 
 export default function SwimLanes({ sessions, events }: SwimLanesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { isDark } = useApp();
 
   const activeSessions = useMemo(
     () => sessions.filter((s) => s.status === "running" || s.status === "queued"),
@@ -71,6 +73,29 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
     canvas.style.height = `${height}px`;
     ctx.scale(dpr, dpr);
 
+    // Theme-aware colors
+    const colors = isDark
+      ? {
+          laneBg: "rgba(30, 41, 59, 0.4)",
+          queuedBg: "rgba(113, 63, 18, 0.2)",
+          border: "rgba(255, 255, 255, 0.08)",
+          textPrimary: "#e2e8f0",
+          textSecondary: "#94a3b8",
+          textTertiary: "#64748b",
+          axisLine: "rgba(255, 255, 255, 0.1)",
+          gridLine: "rgba(255, 255, 255, 0.06)",
+        }
+      : {
+          laneBg: "rgba(240, 249, 255, 0.5)",
+          queuedBg: "rgba(254, 249, 195, 0.5)",
+          border: "#e5e7eb",
+          textPrimary: "#374151",
+          textSecondary: "#6b7280",
+          textTertiary: "#9ca3af",
+          axisLine: "#d1d5db",
+          gridLine: "#e5e7eb",
+        };
+
     // Clear
     ctx.clearRect(0, 0, width, height);
 
@@ -85,26 +110,31 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
     activeSessions.forEach((session, idx) => {
       const y = PADDING + idx * (LANE_HEIGHT + LANE_GAP);
 
-      // Lane background
-      ctx.fillStyle = session.status === "queued" ? "#fef9c3" : "#f0f9ff";
-      ctx.globalAlpha = 0.3;
-      ctx.fillRect(0, y, width, LANE_HEIGHT);
-      ctx.globalAlpha = 1;
+      // Lane background with rounded corners
+      ctx.fillStyle = session.status === "queued" ? colors.queuedBg : colors.laneBg;
+      ctx.beginPath();
+      const radius = 8;
+      ctx.roundRect(0, y, width, LANE_HEIGHT, radius);
+      ctx.fill();
 
       // Lane border
-      ctx.strokeStyle = "#e5e7eb";
+      ctx.strokeStyle = colors.border;
       ctx.lineWidth = 1;
-      ctx.strokeRect(0, y, width, LANE_HEIGHT);
+      ctx.beginPath();
+      ctx.roundRect(0, y, width, LANE_HEIGHT, radius);
+      ctx.stroke();
 
-      // Session color indicator
+      // Session color indicator (rounded left side)
       ctx.fillStyle = session.color;
-      ctx.fillRect(0, y, 4, LANE_HEIGHT);
+      ctx.beginPath();
+      ctx.roundRect(0, y, 4, LANE_HEIGHT, [radius, 0, 0, radius]);
+      ctx.fill();
 
       // Header text
       const issue = mockIssues.find((i) => i.id === session.issueId);
       const project = mockProjects.find((p) => p.id === session.projectId);
 
-      ctx.fillStyle = "#374151";
+      ctx.fillStyle = colors.textPrimary;
       ctx.font = "bold 12px 'Geist Variable', sans-serif";
       ctx.fillText(
         project?.name ?? "unknown",
@@ -112,22 +142,22 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
         y + 20
       );
 
-      ctx.fillStyle = "#6b7280";
-      ctx.font = "11px 'Geist Variable', monospace";
+      ctx.fillStyle = colors.textTertiary;
+      ctx.font = "11px 'Geist Mono', ui-monospace, monospace";
       ctx.fillText(
         session.sessionId.slice(0, 20),
         12,
         y + 34
       );
 
-      ctx.fillStyle = "#374151";
+      ctx.fillStyle = colors.textSecondary;
       ctx.font = "11px 'Geist Variable', sans-serif";
       const issueLabel = issue ? `#${issue.issueNumber} ${issue.title.slice(0, 24)}...` : "No issue";
       ctx.fillText(issueLabel, 12, y + 50);
 
       // Counters
-      ctx.fillStyle = "#9ca3af";
-      ctx.font = "10px 'Geist Variable', sans-serif";
+      ctx.fillStyle = colors.textTertiary;
+      ctx.font = "10px 'Geist Mono', ui-monospace, monospace";
       ctx.fillText(
         `${session.eventCount} events | ${session.toolCount} tools | ${session.model.split("-").slice(0, 2).join("-")}`,
         12,
@@ -135,13 +165,15 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
       );
 
       // Timeline axis line
-      ctx.strokeStyle = "#d1d5db";
+      ctx.strokeStyle = colors.axisLine;
       ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
       ctx.beginPath();
       const laneMidY = y + LANE_HEIGHT / 2;
       ctx.moveTo(HEADER_WIDTH + PADDING, laneMidY);
       ctx.lineTo(width - PADDING, laneMidY);
       ctx.stroke();
+      ctx.setLineDash([]);
 
       // Plot events for this session
       const sessionEvents = events.filter(
@@ -152,15 +184,18 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
         const ex = timeToX(event.timestamp);
         const ey = laneMidY;
 
-        // Draw event dot
+        // Draw event dot with shadow
+        ctx.shadowColor = getToolColor(event.toolName);
+        ctx.shadowBlur = 4;
         ctx.beginPath();
         ctx.arc(ex, ey, EVENT_RADIUS, 0, Math.PI * 2);
         ctx.fillStyle = getToolColor(event.toolName);
         ctx.fill();
+        ctx.shadowBlur = 0;
 
-        // Outline for hook vs orchestration
+        // Outline for orchestration events (double ring)
         if (event.source === "orchestration") {
-          ctx.strokeStyle = "#1f2937";
+          ctx.strokeStyle = isDark ? "#e2e8f0" : "#1f2937";
           ctx.lineWidth = 2;
           ctx.stroke();
         }
@@ -169,8 +204,8 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
 
     // Time axis labels
     const tickCount = 6;
-    ctx.fillStyle = "#9ca3af";
-    ctx.font = "10px 'Geist Variable', monospace";
+    ctx.fillStyle = colors.textTertiary;
+    ctx.font = "10px 'Geist Mono', ui-monospace, monospace";
     for (let i = 0; i <= tickCount; i++) {
       const t = minTime + (timeRange * i) / tickCount;
       const x = HEADER_WIDTH + PADDING + (timelineWidth * i) / tickCount;
@@ -178,24 +213,24 @@ export default function SwimLanes({ sessions, events }: SwimLanesProps) {
       const label = `${date.getUTCHours().toString().padStart(2, "0")}:${date.getUTCMinutes().toString().padStart(2, "0")}`;
       ctx.fillText(label, x - 14, PADDING + activeSessions.length * (LANE_HEIGHT + LANE_GAP) + 4);
     }
-  }, [activeSessions, events, minTime, maxTime]);
+  }, [activeSessions, events, minTime, maxTime, isDark]);
 
   return (
-    <div className="rounded-lg border border-border bg-card overflow-hidden">
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
+    <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <h3 className="text-sm font-semibold">Swim Lanes</h3>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           {Object.entries(TOOL_COLORS).map(([tool, color]) => (
-            <span key={tool} className="flex items-center gap-1">
+            <span key={tool} className="flex items-center gap-1.5">
               <span
-                className="inline-block size-2.5 rounded-full"
+                className="inline-block size-2.5 rounded-full shadow-sm"
                 style={{ backgroundColor: color }}
               />
               {tool}
             </span>
           ))}
-          <span className="flex items-center gap-1">
-            <span className="inline-block size-2.5 rounded-full bg-gray-500" />
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block size-2.5 rounded-full bg-gray-500 shadow-sm" />
             Other
           </span>
         </div>

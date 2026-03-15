@@ -82,7 +82,7 @@ export default function IssueDetailModal({
                 href={issue.issueUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-1 font-technical text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 #{issue.issueNumber}
                 <ExternalLinkIcon className="size-3" />
@@ -106,9 +106,9 @@ export default function IssueDetailModal({
         )}
 
         {/* Details grid */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           {/* Session */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1.5 rounded-lg bg-muted/30 p-3">
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Session
             </span>
@@ -122,7 +122,7 @@ export default function IssueDetailModal({
           </div>
 
           {/* Verification status */}
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1.5 rounded-lg bg-muted/30 p-3">
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Verification
             </span>
@@ -147,7 +147,7 @@ export default function IssueDetailModal({
 
           {/* PR link */}
           {issue.prNumber && (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1.5 rounded-lg bg-muted/30 p-3">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Pull Request
               </span>
@@ -166,7 +166,7 @@ export default function IssueDetailModal({
 
           {/* Requirement IDs */}
           {issue.requirementIds && issue.requirementIds.length > 0 && (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1.5 rounded-lg bg-muted/30 p-3">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Requirements
               </span>
@@ -175,7 +175,7 @@ export default function IssueDetailModal({
                   <Badge
                     key={reqId}
                     variant="secondary"
-                    className="text-[10px] font-mono"
+                    className="font-technical text-[10px]"
                   >
                     {reqId}
                   </Badge>

@@ -11,10 +11,10 @@ interface TraceTreeProps {
 }
 
 const LEVEL_COLORS: Record<string, string> = {
-  session: "bg-purple-100 text-purple-800",
-  step: "bg-blue-100 text-blue-800",
-  cli_call: "bg-amber-100 text-amber-800",
-  tool_use: "bg-green-100 text-green-800",
+  session: "bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300",
+  step: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
+  cli_call: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+  tool_use: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
 };
 
 const WATERFALL_COLORS: Record<string, string> = {
@@ -39,16 +39,18 @@ function TraceNode({
   depth,
   globalStart,
   globalEnd,
+  isLast,
 }: {
   trace: AgentTrace;
   depth: number;
   globalStart: number;
   globalEnd: number;
+  isLast: boolean;
 }) {
   const [expanded, setExpanded] = useState(depth < 2);
 
   const hasChildren = trace.children && trace.children.length > 0;
-  const indentPx = depth * 20;
+  const indentPx = depth * 24;
 
   // Waterfall bar calculation
   const traceStart = new Date(trace.startedAt).getTime();
@@ -62,28 +64,54 @@ function TraceNode({
     0.5
   );
 
+  const waterfallColor = WATERFALL_COLORS[trace.level] ?? "#6b7280";
+
   return (
     <div>
       <div
-        className="flex items-center gap-1 py-1 hover:bg-accent/30 transition-colors cursor-pointer group"
+        className="flex items-center gap-1.5 py-1.5 hover:bg-accent/30 transition-colors cursor-pointer group relative"
         style={{ paddingLeft: indentPx + 8 }}
         onClick={() => hasChildren && setExpanded(!expanded)}
       >
+        {/* Tree connector lines */}
+        {depth > 0 && (
+          <>
+            {/* Vertical connector from parent */}
+            <span
+              className="absolute border-l border-border/60 dark:border-border/40"
+              style={{
+                left: indentPx - 12 + 8,
+                top: 0,
+                height: isLast ? "50%" : "100%",
+              }}
+            />
+            {/* Horizontal connector to node */}
+            <span
+              className="absolute border-t border-border/60 dark:border-border/40"
+              style={{
+                left: indentPx - 12 + 8,
+                top: "50%",
+                width: 12,
+              }}
+            />
+          </>
+        )}
+
         {/* Expand/collapse or spacer */}
         {hasChildren ? (
           expanded ? (
-            <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+            <ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform" />
           ) : (
-            <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
+            <ChevronRight className="size-3.5 shrink-0 text-muted-foreground transition-transform" />
           )
         ) : (
-          <span className="inline-block w-3.5" />
+          <span className="inline-block w-3.5 shrink-0" />
         )}
 
         {/* Level badge */}
         <Badge
           variant="secondary"
-          className={`text-[10px] shrink-0 ${LEVEL_COLORS[trace.level] ?? ""}`}
+          className={`text-[10px] shrink-0 border-none ${LEVEL_COLORS[trace.level] ?? ""}`}
         >
           {trace.level}
         </Badge>
@@ -94,34 +122,37 @@ function TraceNode({
         </span>
 
         {/* Duration */}
-        <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground ml-auto mr-2 shrink-0">
+        <span className="flex items-center gap-0.5 font-technical text-[10px] text-muted-foreground ml-auto mr-2 shrink-0">
           <Clock className="size-2.5" />
           {formatDuration(trace.startedAt, trace.endedAt)}
         </span>
 
-        {/* Waterfall bar */}
-        <div className="relative w-[200px] h-3 shrink-0 bg-muted/40 rounded-sm overflow-hidden">
+        {/* Waterfall bar with gradient */}
+        <div className="relative w-[200px] h-4 shrink-0 bg-muted/30 dark:bg-muted/20 rounded-md overflow-hidden">
           <div
-            className="absolute top-0 h-full rounded-sm opacity-80"
-            style={{
-              left: `${barLeft}%`,
-              width: `${barWidth}%`,
-              backgroundColor: WATERFALL_COLORS[trace.level] ?? "#6b7280",
-            }}
+            className="absolute top-0.5 bottom-0.5 rounded-sm waterfall-bar"
+            style={
+              {
+                left: `${barLeft}%`,
+                width: `${barWidth}%`,
+                "--waterfall-color": waterfallColor,
+              } as React.CSSProperties
+            }
           />
         </div>
       </div>
 
       {/* Children */}
       {expanded && hasChildren && (
-        <div>
-          {trace.children!.map((child) => (
+        <div className="relative">
+          {trace.children!.map((child, idx) => (
             <TraceNode
               key={child.id}
               trace={child}
               depth={depth + 1}
               globalStart={globalStart}
               globalEnd={globalEnd}
+              isLast={idx === trace.children!.length - 1}
             />
           ))}
         </div>
@@ -157,13 +188,13 @@ export default function TraceTree({ traces, selectedSessionId }: TraceTreeProps)
   })();
 
   return (
-    <div className="rounded-lg border border-border bg-card">
-      <div className="flex items-center justify-between border-b border-border px-4 py-2">
+    <div className="rounded-xl border border-border bg-card shadow-sm">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
         <h3 className="text-sm font-semibold">Trace View</h3>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           {Object.entries(LEVEL_COLORS).map(([level, cls]) => (
             <span key={level} className="flex items-center gap-1">
-              <Badge variant="secondary" className={`text-[9px] px-1 py-0 ${cls}`}>
+              <Badge variant="secondary" className={`text-[9px] px-1.5 py-0 border-none ${cls}`}>
                 {level}
               </Badge>
             </span>
@@ -174,13 +205,14 @@ export default function TraceTree({ traces, selectedSessionId }: TraceTreeProps)
       <ScrollArea className="h-[400px]">
         <div className="py-1">
           {displayTraces.length > 0 ? (
-            displayTraces.map((trace) => (
+            displayTraces.map((trace, idx) => (
               <TraceNode
                 key={trace.id}
                 trace={trace}
                 depth={0}
                 globalStart={globalStart}
                 globalEnd={globalEnd}
+                isLast={idx === displayTraces.length - 1}
               />
             ))
           ) : (

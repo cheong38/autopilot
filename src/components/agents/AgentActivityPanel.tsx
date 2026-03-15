@@ -42,42 +42,48 @@ export default function AgentActivityPanel() {
     <div className="border-t border-border bg-card">
       {/* Header bar */}
       <button
-        className="flex w-full items-center justify-between px-4 py-2 text-sm font-medium hover:bg-accent/50 transition-colors"
+        className="flex w-full items-center justify-between px-4 py-2.5 text-sm font-medium hover:bg-accent/50 transition-colors"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-3">
           <Bot className="size-4 text-muted-foreground" />
           <span>Agent Activity</span>
-          <Badge variant="secondary" className="text-xs font-mono">
+          <Badge
+            variant="secondary"
+            className="font-technical text-xs"
+          >
             {summary.running}/{summary.totalSlots} active
-            {summary.queued > 0 && `, ${summary.queued} queued`}
+            {summary.queued > 0 && ` | ${summary.queued} queued`}
           </Badge>
         </div>
         {expanded ? (
-          <ChevronDown className="size-4 text-muted-foreground" />
+          <ChevronDown className="size-4 text-muted-foreground transition-transform" />
         ) : (
-          <ChevronUp className="size-4 text-muted-foreground" />
+          <ChevronUp className="size-4 text-muted-foreground transition-transform" />
         )}
       </button>
 
       {/* Expandable content */}
       {expanded && (
-        <div className="flex gap-3 overflow-x-auto px-4 pb-3">
+        <div className="animate-panel-expand flex gap-3 overflow-x-auto px-4 pb-3">
           {activeSessions.map((session) => {
             const issue = mockIssues.find((i) => i.id === session.issueId);
+            const isRunning = session.status === "running";
             return (
               <div
                 key={session.id}
-                className="flex min-w-[220px] flex-col gap-1.5 rounded-lg border border-border bg-background p-3"
+                className="hover-lift flex min-w-[220px] flex-col gap-1.5 rounded-lg border border-border bg-background p-3 transition-all duration-150"
                 style={{ borderLeftColor: session.color, borderLeftWidth: 3 }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-muted-foreground">
+                  <span className="font-technical text-xs text-muted-foreground">
                     {issue ? `#${issue.issueNumber}` : session.sessionId.slice(0, 16)}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1.5">
                     <span
-                      className={`inline-block size-2 rounded-full ${statusColors[session.status]}`}
+                      className={`inline-block size-2 rounded-full ${statusColors[session.status]} ${
+                        isRunning ? "animate-status-pulse" : ""
+                      }`}
                     />
                     <span className="text-xs capitalize text-muted-foreground">
                       {session.status}
@@ -90,11 +96,11 @@ export default function AgentActivityPanel() {
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Cpu className="size-3" />
-                    {session.currentStep}
+                    <span className="font-technical">{session.currentStep}</span>
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="size-3" />
-                    {formatElapsed(session.startedAt)}
+                    <span className="font-technical">{formatElapsed(session.startedAt)}</span>
                   </span>
                 </div>
               </div>
@@ -111,7 +117,7 @@ export default function AgentActivityPanel() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs text-muted-foreground"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               asChild
             >
               <a href="/agents">View all &rarr;</a>

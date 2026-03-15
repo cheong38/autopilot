@@ -67,7 +67,7 @@ function layoutGraph(
 }
 
 export default function DagPage() {
-  const { currentProject } = useApp();
+  const { currentProject, isDark } = useApp();
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -111,16 +111,17 @@ export default function DagPage() {
       };
     });
 
-    // Build React Flow edges
+    // Build React Flow edges with theme-aware colors
+    const edgeColor = isDark ? "rgba(148, 163, 184, 0.5)" : "var(--color-muted-foreground)";
     const rfEdges: Edge[] = relevantEdges.map((e, idx) => ({
       id: `edge-${idx}`,
       source: e.from,
       target: e.to,
       animated: true,
-      style: { stroke: "var(--color-muted-foreground)", strokeWidth: 1.5 },
+      style: { stroke: edgeColor, strokeWidth: 1.5 },
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        color: "var(--color-muted-foreground)",
+        color: edgeColor,
         width: 16,
         height: 16,
       },
@@ -130,7 +131,7 @@ export default function DagPage() {
     const laidOutNodes = layoutGraph(rfNodes, rfEdges);
 
     return { initialNodes: laidOutNodes, initialEdges: rfEdges };
-  }, [currentProject.id]);
+  }, [currentProject.id, isDark]);
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
@@ -150,10 +151,10 @@ export default function DagPage() {
     <div className="flex h-full flex-col">
       {/* Header */}
       <div className="shrink-0 border-b px-6 py-4">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-lg font-semibold tracking-tight">
           Dependency Graph
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Issue dependencies for{" "}
           <span className="font-medium text-foreground">
             {currentProject.name}
@@ -177,14 +178,14 @@ export default function DagPage() {
           maxZoom={2}
           proOptions={{ hideAttribution: true }}
         >
-          <Controls className="!bg-card !border-border !shadow-md [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-foreground hover:[&>button]:!bg-accent" />
+          <Controls className="!bg-card !border-border !shadow-md !rounded-lg [&>button]:!bg-card [&>button]:!border-border [&>button]:!text-foreground hover:[&>button]:!bg-accent" />
           <MiniMap
-            className="!bg-card !border-border !shadow-md"
+            className="!bg-card !border-border !shadow-md !rounded-lg"
             nodeColor={(node) => {
               const data = node.data as DagNodeData;
               return data.sessionColor;
             }}
-            maskColor="rgba(0, 0, 0, 0.1)"
+            maskColor={isDark ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)"}
             pannable
             zoomable
           />
@@ -192,7 +193,7 @@ export default function DagPage() {
             variant={BackgroundVariant.Dots}
             gap={20}
             size={1}
-            color="var(--color-border)"
+            color={isDark ? "rgba(255, 255, 255, 0.06)" : "var(--color-border)"}
           />
         </ReactFlow>
       </div>

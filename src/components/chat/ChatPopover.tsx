@@ -63,9 +63,9 @@ export default function ChatPopover() {
 
   return (
     <>
-      {/* Backdrop — subtle, allows click to close */}
+      {/* Backdrop -- subtle, allows click to close */}
       <div
-        className="fixed inset-0 z-40"
+        className="fixed inset-0 z-40 bg-black/5 dark:bg-black/20 transition-opacity"
         onClick={() => setChatOpen(false)}
       />
 
@@ -80,12 +80,12 @@ export default function ChatPopover() {
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
-          <div className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-full bg-primary/10">
-              <Sparkles className="size-3.5 text-primary" />
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/5">
+              <Sparkles className="size-4 text-primary" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">Chat with OP (오피)</span>
+              <span className="text-sm font-semibold">Chat with OP</span>
               {project && (
                 <span className="text-xs text-muted-foreground">
                   {project.name}
@@ -96,7 +96,7 @@ export default function ChatPopover() {
           <Button
             variant="ghost"
             size="icon"
-            className="size-7"
+            className="size-7 transition-colors"
             onClick={() => setChatOpen(false)}
           >
             <X className="size-4" />
@@ -114,7 +114,7 @@ export default function ChatPopover() {
               {/* Typing indicator */}
               {isTyping && (
                 <div className="flex items-center gap-2">
-                  <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/5">
                     <Sparkles className="size-3.5 text-primary" />
                   </div>
                   <div className="rounded-2xl rounded-tl-sm bg-muted px-3.5 py-2">
@@ -146,14 +146,14 @@ export default function ChatPopover() {
               onChange={(e) => setFreeText(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type a message..."
-              className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="flex-1 resize-none rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-shadow"
               rows={1}
             />
             <Button
               size="icon"
               onClick={handleFreeTextSend}
               disabled={!freeText.trim()}
-              className="shrink-0"
+              className="shrink-0 transition-transform hover:scale-105"
             >
               <Send className="size-4" />
             </Button>

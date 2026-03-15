@@ -1,7 +1,9 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { Project } from "@/types";
 import { mockProjects } from "@/data/mock-projects";
 import { mockConversations } from "@/data/mock-conversations";
+
+type Theme = "light" | "dark";
 
 interface AppContextValue {
   currentProject: Project;
@@ -13,14 +15,42 @@ interface AppContextValue {
   setActiveChatConversationId: (id: string | null) => void;
   openChatForHiItem: (hiItemId: string) => void;
   openChatDefault: () => void;
+  // Theme
+  theme: Theme;
+  toggleTheme: () => void;
+  isDark: boolean;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
+
+function getInitialTheme(): Theme {
+  if (typeof window !== "undefined") {
+    const stored = localStorage.getItem("autopilot-theme");
+    if (stored === "dark" || stored === "light") return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  return "light";
+}
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [currentProject, setCurrentProject] = useState<Project>(mockProjects[0]);
   const [chatOpen, setChatOpen] = useState(false);
   const [activeChatConversationId, setActiveChatConversationId] = useState<string | null>(null);
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    localStorage.setItem("autopilot-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((t) => (t === "dark" ? "light" : "dark"));
+  }, []);
 
   const openChatForHiItem = useCallback((hiItemId: string) => {
     // Find conversation linked to this HI item
@@ -52,6 +82,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setActiveChatConversationId,
         openChatForHiItem,
         openChatDefault,
+        theme,
+        toggleTheme,
+        isDark: theme === "dark",
       }}
     >
       {children}

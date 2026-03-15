@@ -36,7 +36,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold tracking-tight">Board</h2>
+        <h2 className="text-lg font-semibold tracking-tight">Board</h2>
         <SessionFilter
           sessions={projectSessions}
           value={selectedSession}

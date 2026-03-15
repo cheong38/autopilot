@@ -35,19 +35,14 @@ export default function KanbanCard({ issue, onClick }: KanbanCardProps) {
 
   return (
     <Card
-      className="cursor-pointer gap-0 overflow-hidden border-border py-0 transition-shadow hover:shadow-md"
+      className="hover-lift cursor-pointer gap-0 overflow-hidden border-border py-0 transition-all duration-150"
+      style={{ borderLeftColor: session?.color ?? "#888", borderLeftWidth: 3 }}
       onClick={() => onClick?.(issue)}
     >
-      {/* Session color bar */}
-      <div
-        className="h-1 w-full"
-        style={{ backgroundColor: session?.color ?? "#888" }}
-      />
-
       <div className="flex flex-col gap-2 p-3">
         {/* Header: issue number + type badge */}
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground">
+          <span className="font-technical text-xs font-medium text-muted-foreground">
             #{issue.issueNumber}
           </span>
           <Badge
@@ -76,7 +71,7 @@ export default function KanbanCard({ issue, onClick }: KanbanCardProps) {
             </Badge>
           )}
           {issue.prNumber && (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="font-technical text-[10px] text-muted-foreground">
               PR #{issue.prNumber}
             </span>
           )}
